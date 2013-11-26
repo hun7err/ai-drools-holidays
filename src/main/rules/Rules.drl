@@ -1,20 +1,148 @@
 package com.sample
- 
-import com.sample.HolidaysMain.Message;
- 
-rule "Hello World"
+
+import java.util.Vector;
+import java.util.Iterator;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane; 
+
+import com.sample.DroolsTest.ChosenBudget;
+import com.sample.DroolsTest.ChosenLengthOfHoliday;
+import com.sample.DroolsTest.ChosenContinents;
+import com.sample.DroolsTest.ChosenCountries;
+import com.sample.DroolsTest.ChosenAge;
+import com.sample.DroolsTest.ChosenDiseases;
+import com.sample.DroolsTest.ChosenSkills;
+import com.sample.DroolsTest.ChosenWillingness;
+import com.sample.DroolsTest.ChosenWayOfSpendingTime;
+import com.sample.DroolsTest.ChosenInterests;
+import com.sample.DroolsTest.Holiday;
+import com.sample.DroolsTest.Options;
+
+rule "Choose diseases"
     when
-        m : Message( status == Message.HELLO, myMessage : message )
+        h: Holiday() and o: Options() and not ChosenDiseases()
     then
-        System.out.println( myMessage );
-        m.setMessage( "Goodbye cruel world" );
-        m.setStatus( Message.GOODBYE );
-        update( m );
+		insert (new ChosenDiseases(h.windowCheckbox(o.diseases, "Diseases", "Które z poniższych dolegliwości Ciebie dotyczą?", true)));
 end
 
-rule "GoodBye"
+rule "Choose skills"
     when
-        Message( status == Message.GOODBYE, myMessage : message )
+        h: Holiday() and o: Options() and not ChosenSkills()
     then
-        System.out.println( myMessage );
+		insert (new ChosenSkills(h.windowCheckbox(o.skills, "Skills", "Które z poniższych umiejętności posiadasz?", true)));
 end
+
+rule "Choose willingness"
+    when
+        h: Holiday() and o: Options() and c: ChosenSkills() and not ChosenWillingness()
+    then
+		insert (new ChosenWillingness(h.windowCheckbox(c.generateWillingness(), "Willingness", "Które z poniższych umiejętności chciałbyś posiąść?", true)));
+end
+
+rule "Enter bugdet"
+	when
+		h: Holiday() and not ChosenBudget()
+	then		
+		int budget = h.windowInt("Budget","Podaj proszę maksymalną kwotę, jaką możesz przeznaczyć na wyjazd.",
+			"Nie podano dostępnego budżetu.", "Proszę podać liczbę wyrażającą dostępny budżet.", 
+			500, "Podano zbyt mały budżet (minimalna wielkość - 500zł).");
+		insert(new ChosenBudget(budget));
+end
+
+rule "Enter length of stay"
+	when
+		h: Holiday() and not ChosenLengthOfHoliday()
+	then
+		int days = h.windowInt("Length of stay","Podaj proszę liczbę dni pobytu.",
+			"Nie podano długości pobytu (w dniach).", "Proszę podać liczbę wyrażającą długość pobytu (w dniach).", 
+			1, "Liczba dni musi być liczbą dodatnią.");
+		insert(new ChosenLengthOfHoliday(days));
+end
+
+rule "Age"
+	when
+        h: Holiday() and o:Options() and not ChosenAge()
+    then
+		insert (new ChosenAge(h.windowChooseOne(o.age, "Age", "Proszę wybrać dokładnie 1 z opcji", 2)));
+end
+
+rule "Choose continent"
+    when
+        h: Holiday() and o: Options() and not ChosenContinents()
+    then
+		insert(new ChosenContinents(h.windowCheckbox(o.continents, "Continents", "Które z kontynetów chciałbyś/chciałabyś odwiedzić?", false)));
+end
+
+rule "Choose way of spending time"
+    when
+        h: Holiday() and o: Options() and not ChosenWayOfSpendingTime()
+    then
+		insert(new ChosenWayOfSpendingTime(h.windowChooseOne(o.wayOfSpendingTime, "Way of spending time", "Jaki odpoczynek preferujesz?", 0)));
+end
+
+rule "Choose interests"
+    when
+        h: Holiday() and o: Options() and not ChosenInterests()
+    then
+		insert(new ChosenInterests(h.windowCheckbox(o.interests, "Interests", "Czym się interesujesz?", true)));
+end
+
+
+
+/*
+rule "Choose country"
+    when
+        h: Holiday() and o: Options() and c: ChosenContinents() and not ChosenCountries()
+    then
+    	Vector<String> countries = new Vector<String>();
+    	String [] options = new String [5];
+    	
+		for (int c=0; c<h.getContinent().size(); c++) {
+	    	
+	    	if (h.getContinent().get(c) == "Afryka") {	    	
+			    options[0] = "Algieria";
+			    options[1] = "Egipt";
+			    options[2] = "Madagaskar";
+			    options[3] = "Nigeria";
+			    options[4] = "Senegal";
+		    }
+	    	else if (h.getContinent().get(c) == "Ameryka północna")	{
+	    		options[0] = "Jamajka";
+			    options[1] = "Kanada";
+			    options[2] = "Kuba";
+			    options[3] = "Meksyk";
+			    options[4] = "Stany Zjednoczone";
+			}
+		    else if (h.getContinent().get(c) == "Ameryka południowa") {
+		    	options[0] = "Argentyna";
+			    options[1] = "Brazylia";
+			    options[2] = "Chile";
+			    options[3] = "Peru";
+			    options[4] = "Urugwaj";
+			}	    	
+		    else if (h.getContinent().get(c) == "Azja") {
+		    	options[0] = "Chiny";
+			    options[1] = "Filipiny";
+			    options[2] = "Indie";
+			    options[3] = "Japonia";
+			    options[4] = "Rosja";
+			}  	
+			else if (h.getContinent().get(c) == "Europa") {
+		    	options[0] = "Finlandia";
+			    options[1] = "Francja";
+			    options[2] = "Niemcy";
+			    options[3] = "Polska";
+			    options[4] = "Włochy";
+			} 
+		    
+		    countries.addAll( h.windowCheckbox(options, "Countries", 
+		    	"Których z krajów na kontynencie " + h.getContinent().get(c) + " jeszcze nie widziałeś/widziałaś lub chciałbyś/chciałabyś odwiedzić ponownie?",
+		    	false));
+		    
+		}
+		h.changeCuntries(countries);
+		update(h);
+end
+*/
+
