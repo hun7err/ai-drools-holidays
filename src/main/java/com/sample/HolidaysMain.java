@@ -31,8 +31,8 @@ public class DroolsTest {
 			KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory
 					.newFileLogger(ksession, "test");
 			// go !
-			Holiday holiday = new Holiday();
-			ksession.insert(holiday);
+			Windows windows = new Windows();
+			ksession.insert(windows);
 			
 			Options options = new Options();
 			ksession.insert(options);
@@ -66,10 +66,16 @@ public class DroolsTest {
 		public ChosenContinents(Vector<String> v) {
 			this.names = (Vector <String>) v.clone();
 		}
+		public Vector<String> getContinents() {
+			return this.names;
+		}
 	}
 	
 	public static class ChosenCountries {
 		private Vector <String> names;
+		public Vector<String> getCountries() {
+			return this.names;
+		}
 	}
 	
 	public static class ChosenAge {
@@ -77,12 +83,18 @@ public class DroolsTest {
 		public ChosenAge(String a) {
 			this.age = a;
 		}
+		public String getAge() {
+			return this.age;
+		}
 	}
 	
 	public static class ChosenDiseases {
 		private Vector <String> names;
 		public ChosenDiseases(Vector<String> v) {
 			this.names = (Vector <String>) v.clone();
+		}
+		public Vector <String> getDiseases() {
+			return this.names;
 		}
 	}
 
@@ -123,6 +135,9 @@ public class DroolsTest {
 		public ChosenInterests(Vector<String> v) {
 			this.names = (Vector <String>) v.clone();
 		}
+		public Vector <String> getInterests() {
+			return this.names;
+		}
 	}
 	
 	public static class ChosenWayOfSpendingTime {
@@ -137,12 +152,19 @@ public class DroolsTest {
 		public ChosenBudget (int b) {
 			this.budget = b;
 		}
+		public Integer getBudget() {
+			return this.budget;
+		}
+		
 	}
 	
 	public static class ChosenLengthOfHoliday {
 		private int days;
 		public ChosenLengthOfHoliday (int d) {
 			this.days = d;
+		}
+		public Integer getLength() {
+			return this.days;
 		}
 	}
 	
@@ -166,7 +188,7 @@ public class DroolsTest {
 			
 	}
 	
-	public static class Holiday {
+	public static class Windows {
 
 		/** 
 		 * window used to get budget and length of the stay
@@ -206,49 +228,51 @@ public class DroolsTest {
 		 * window used to get continents, counties etc
 		 * - checkbox
 		 * */
-		public Vector <String> windowCheckbox(String [] options, String title, String message, boolean acceptEmpty) {
+		public Vector <String> windowCheckbox(String [] options, String title, String message, boolean acceptEmpty) {	
 			Vector <String> result = new Vector<String>();
 	    	boolean correctData;
 			
-	    	JCheckBox [] checkbox = new JCheckBox [options.length];
-	    	for (int i=0; i<options.length; ++i)
-	    		checkbox[i] = new JCheckBox(options[i]);
-		     
-		    Object [] params = new Object [(options.length)+1]; 
-		    params[0] = message;
-		    for (int i=0; i<options.length; ++i)
-		    	params[i+1] = checkbox[i];
-		    Object[] ok = {"OK"};
-		    
-		    do {
-		    	correctData = false;
-		    	JOptionPane.showOptionDialog(null, params, title, JOptionPane.OK_OPTION, 
-		    			JOptionPane.PLAIN_MESSAGE, null, ok, ok[0]);
-			
-		    	//checking if at least one item is selected
-				for (int i=0; i<options.length; ++i) {
-				    if (checkbox[i].isSelected()) {
-				    	result.add(options[i]);
-				    	correctData = true;
-				    }
-				}
-			
-				if(correctData == false) {
-					if (acceptEmpty == true) {
-						Object[] opt = { "OK", "CANCEL" };
-						int decision = JOptionPane.showOptionDialog(null, "Nie zaznaczono żadnej opcji. Czy na pewno chcesz kontynuować?", 
-								"Warning", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, opt, opt[0]);
-						if (decision == 0) {
-							correctData = true;
+	    	if (options.length  > 0) {
+		    	
+		    	JCheckBox [] checkbox = new JCheckBox [options.length];
+		    	for (int i=0; i<options.length; ++i)
+		    		checkbox[i] = new JCheckBox(options[i]);
+			     
+			    Object [] params = new Object [(options.length)+1]; 
+			    params[0] = message;
+			    for (int i=0; i<options.length; ++i)
+			    	params[i+1] = checkbox[i];
+			    Object[] ok = {"OK"};
+			    
+			    do {
+			    	correctData = false;
+			    	JOptionPane.showOptionDialog(null, params, title, JOptionPane.OK_OPTION, 
+			    			JOptionPane.PLAIN_MESSAGE, null, ok, ok[0]);
+				
+			    	//checking if at least one item is selected
+					for (int i=0; i<options.length; ++i) {
+					    if (checkbox[i].isSelected()) {
+					    	result.add(options[i]);
+					    	correctData = true;
+					    }
+					}
+				
+					if(correctData == false) {
+						if (acceptEmpty == true) {
+							Object[] opt = { "OK", "CANCEL" };
+							int decision = JOptionPane.showOptionDialog(null, "Nie zaznaczono żadnej opcji. Czy na pewno chcesz kontynuować?", 
+									"Warning", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, opt, opt[0]);
+							if (decision == 0) {
+								correctData = true;
+							}
+						}
+						else {
+							JOptionPane.showMessageDialog(null, "You have to check at least one option", 
+									"Invalid data", JOptionPane.ERROR_MESSAGE); 
 						}
 					}
-					else {
-						JOptionPane.showMessageDialog(null, "You have to check at least one option", 
-								"Invalid data", JOptionPane.ERROR_MESSAGE); 
-					}
-				}
-		    } while (correctData == false);
-		    
+			    } while (correctData == false);
+	    	}
 			return result;
 		}
 		
@@ -264,6 +288,12 @@ public class DroolsTest {
 		}
 		
 		
+	}
+	
+	public static class Holiday {		
+		public Holiday(String c) {
+			JOptionPane.showMessageDialog(null, "Proponujemy wyjazd do kraju: " + c, "Holiday", JOptionPane.INFORMATION_MESSAGE); 
+		}
 	}
 
 
