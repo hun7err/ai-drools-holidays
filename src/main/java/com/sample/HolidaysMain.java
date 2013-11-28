@@ -296,6 +296,34 @@ public class DroolsTest {
 		}
 	}
 
+	///////////////////////////////////
+	/*
+	// to-do:
+	// wartosci moga byc puste; dac opcje pobrania wartosci (getValues) i sprawdzenie czy wartosci sa puste
+	
+	public static class Fact {
+		String name;
+		List values;// = new LinkedList();
+		
+		public String getName() {
+			return name;
+		}
+		
+		void addValue(Object value) {
+			values.add(value);
+		}
+		
+		Fact(String _name) {
+			values = new LinkedList();
+		}
+		
+		Fact(String _name, List _vals) {
+			name = _name;
+			values = _vals;
+		}
+	}
+	
+	*/
 
 }
 
