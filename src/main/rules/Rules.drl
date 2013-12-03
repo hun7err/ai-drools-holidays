@@ -6,19 +6,24 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane; 
 
-import com.sample.DroolsTest.ChosenBudget;
-import com.sample.DroolsTest.ChosenLengthOfHoliday;
-import com.sample.DroolsTest.ChosenContinents;
-import com.sample.DroolsTest.ChosenCountries;
-import com.sample.DroolsTest.ChosenAge;
-import com.sample.DroolsTest.ChosenDiseases;
-import com.sample.DroolsTest.ChosenSkills;
-import com.sample.DroolsTest.ChosenWillingness;
-import com.sample.DroolsTest.ChosenWayOfSpendingTime;
-import com.sample.DroolsTest.ChosenInterests;
-import com.sample.DroolsTest.Windows;
-import com.sample.DroolsTest.Options;
-import com.sample.DroolsTest.Holiday;
+import com.sample.HolidaysMain.ChosenBudget;
+import com.sample.HolidaysMain.ChosenLengthOfHoliday;
+import com.sample.HolidaysMain.ChosenContinents;
+import com.sample.HolidaysMain.ChosenCountries;
+import com.sample.HolidaysMain.ChosenAge;
+import com.sample.HolidaysMain.ChosenDiseases;
+import com.sample.HolidaysMain.ChosenSkills;
+import com.sample.HolidaysMain.ChosenWillingness;
+import com.sample.HolidaysMain.ChosenWayOfSpendingTime;
+import com.sample.HolidaysMain.ChosenInterests;
+import com.sample.HolidaysMain.Windows;
+import com.sample.HolidaysMain.Options;
+import com.sample.HolidaysMain.Holiday;
+import java.util.List;
+import java.util.LinkedList;
+//
+
+import com.sample.HolidaysMain.Fact;
 
 /*
 rule "Choose diseases"
@@ -152,15 +157,24 @@ end
 
 rule "Algieria"
 	when
-		not Holiday() 
-		and ChosenCountries( getCountries().contains("Algieria") ) 
-		and ChosenAge( getAge() == "dorośli" )
-		and not ChosenDiseases( getDiseases().contains("Złe znoszenie wysokich temperatur") || getDiseases().contains("Strach przed lataniem samolotem") )
-		and ChosenInterests ( getInterests().contains("kultura") )
-		and ChosenBudget( getBudget() > 5000 )
-		and ChosenLengthOfHoliday( getLength() >= 10)
+		//not Holiday()
+		not Fact( name == "Holiday")
+		and Fact( name == "ChosenCountries" && values.contains("Algieria")) 
+		//and ChosenCountries( getCountries().contains("Algieria") ) 
+		and Fact( name == "ChosenAge" && values.get(0) == "dorośli")
+		//and ChosenAge( getAge() == "dorośli" )
+		and not Fact( name == "ChosenDiseases" && values.contains("Złe znoszenie wysokich temperatur") || values.contains("Strach przed lataniem samolotem"))
+		//and not ChosenDiseases( getDiseases().contains("Złe znoszenie wysokich temperatur") || getDiseases().contains("Strach przed lataniem samolotem") )
+		and Fact( name == "ChosenInterests" && values.contains("kultura"))
+		//and ChosenInterests ( getInterests().contains("kultura") )
+		and Fact( name == "ChosenBudget" && values.get(0) > 5000 )
+		//and ChosenBudget( getBudget() > 5000 )
+		and Fact( name == "ChosenLengthOfHoliday" && values.get(0) >= 10)
+		//and ChosenLengthOfHoliday( getLength() >= 10)
 	then
-		insert (new Holiday("Algieria"));
+		List values = new LinkedList();
+		values.add("Algieria");
+		insert (new Fact("Holiday", values));
 end
 
 

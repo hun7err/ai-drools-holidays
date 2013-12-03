@@ -1,5 +1,9 @@
 package com.sample;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.JCheckBox;
@@ -20,7 +24,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 /**
  * This is a sample class to launch a rule.
  */
-public class DroolsTest {
+public class HolidaysMain {
 
 	public static final void main(String[] args) {
 		try {
@@ -171,8 +175,9 @@ public class DroolsTest {
 	
 	
 	public static class Options {
-		public String [] continents = new String []
-			{"Afryka", "Ameryka południowa", "Ameryka północna", "Azja", "Europa" };
+		public Map<String, String[]> continents = new HashMap<String,String[]>();
+		//public String [] continents = new String []
+		//	{"Afryka", "Ameryka południowa", "Ameryka północna", "Azja", "Europa" };
 		//public String [] countriesAfryka = new String []
 		//		{ "Algieria", "Egipt", "Madagaskar", "Nigeria", "Senegal"};
 		public String [] skills = new String [] 
@@ -185,6 +190,11 @@ public class DroolsTest {
 				{"Aktywna", "Bierna"};
 		public String [] interests = new String [] 
 				{"historia", "kultura"};
+		
+		public Options() {
+			continents.put("Afryka", new String[]{"Algieria","Egipt","Madagaskar","Nigeria","Senegal"});
+			
+		}
 			
 	}
 	
@@ -297,7 +307,7 @@ public class DroolsTest {
 	}
 
 	///////////////////////////////////
-	/*
+	
 	// to-do:
 	// wartosci moga byc puste; dac opcje pobrania wartosci (getValues) i sprawdzenie czy wartosci sa puste
 	
@@ -307,6 +317,11 @@ public class DroolsTest {
 		
 		public String getName() {
 			return name;
+		}
+		
+		public List getValues()
+		{
+			return values;
 		}
 		
 		void addValue(Object value) {
@@ -323,7 +338,7 @@ public class DroolsTest {
 		}
 	}
 	
-	*/
+	
 
 }
 
